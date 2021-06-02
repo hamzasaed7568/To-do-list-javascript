@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TO DO LIST</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+</head>
+<body>
+    <script>
+        AOS.init();
+      </script>
+    <form action="" data-aos="fade-down" data-aos-duration="1500">
+        <input type="text" name="" id="" class="input1" placeholder="NAME">
+        <button class="update" type="button">Update</button>
+    </form>
+
+    <button class="clearall"  data-aos="flip-left" data-aos-easing="ease-out-cubic" data-aos-duration="2000" data-aos-duration="1500">CLEAR ALL</button>
+    <div class="container" data-aos="fade-up" data-aos-duration="1500">
+        <ul>
+
+        </ul>
+    </div>
+    
+
+    <script>
+        var form=document.querySelector('form');
+        var ul=document.querySelector('ul');
+        var input=document.querySelector('.input1');
+        var clr=document.querySelector('.clearall');
+        var up=document.querySelector('.update')
+        // console.log(update);
+        var arr=localStorage.getItem('data');
+        var arr = arr? JSON.parse(arr):[]
+
+       
+        form.addEventListener('submit',(e)=>{
+            e.preventDefault();
+            arr.push(input.value);
+            localStorage.setItem('data',JSON.stringify(arr));
+            limakeing(input.value,arr.length-1);
+            input.value='';
+        })
+        function limakeing(val,i)
+        {
+            var li=document.createElement('li');
+            // li.setAttribute('data-key',i)
+            li.className='liclass';
+            li.innerHTML=`<span>${val}</span> <button class='delbtn' onclick="delfun(${i})">delete</button>`        
+            var editbtn=document.createElement('button');
+            editbtn.className='editbtn'
+            editbtn.innerHTML="edit"
+            li.appendChild(editbtn)
+            ul.appendChild(li);
+
+            editbtn.onclick=()=>{
+                editfun(val,i)
+            }
+        }
+
+        clr.onclick = (index)=>{
+            localStorage.clear();
+            arr=[];
+            ul.innerHTML="";
+        }
+
+        arr.forEach((element,i) => {
+            limakeing(element,i);
+        });
+
+        
+        function delfun(i)
+        {
+            arr.splice(i,1);
+            localStorage.setItem('data',JSON.stringify(arr))
+        
+           console.log('btn',i);
+           var li=document.querySelectorAll('li')
+           var removeli=li[i];
+
+           ul.removeChild(removeli);
+           ul.innerHTML=" ";
+           arr.forEach((element,i) => {
+           limakeing(element,i);
+        });
+        }
+        var index=-1;
+        function editfun(val,i)
+        {
+            input.value=val;
+            index=i;
+        }
+
+        up.onclick = ()=>{
+        if(index==-1)
+        {
+            alert(`first select a value to edit`)
+        }
+        else{
+        var newval=input.value;
+        arr[index]=newval;
+        localStorage.setItem('data',JSON.stringify(arr));   
+        ul.innerHTML="";
+        arr.forEach((element,i) => {
+           limakeing(element,i);
+        });
+    }
+    input.value="";
+    index=-1;
+    }
+
+    </script>
+</body>
+</html>
